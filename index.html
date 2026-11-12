@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPレスroomメーカー｜うちよそ研究所</title>
+<meta name="description" content="シナリオのPDF・Word・HTML・テキストをドラッグ＆ドロップするだけで、KPレスのココフォリアroomの下書きを作れる、ブラウザで動くツール。">
+<link rel="icon" href="images/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#f08aa8;
+  --pink-deep:#d9547e;
+  --pink-soft:#fde7ee;
+  --pink-pale:#fff5f8;
+  --ink:#4a3b42;
+  --muted:#8a7881;
+  --line:#f3d3dd;
+  --white:#fff;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);background:var(--white);
+  font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  line-height:1.85;font-size:16px;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--pink-deep)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* header */
+header.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:2px dotted var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;color:var(--ink)}
+.brand img{width:30px;height:30px}
+nav a{white-space:nowrap;margin-left:18px;text-decoration:none;color:var(--muted);font-size:14px;font-weight:500}
+nav a:hover{color:var(--pink-deep)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;text-align:center;padding:72px 0 64px;
+  background:
+    radial-gradient(circle at 12% 20%, var(--pink-soft) 0 90px, transparent 91px),
+    radial-gradient(circle at 90% 78%, var(--pink-soft) 0 120px, transparent 121px),
+    radial-gradient(circle at 78% 12%, #ffeef3 0 46px, transparent 47px),
+    var(--pink-pale);
+}
+.hero .logo{width:96px;height:96px;margin:0 auto 14px;background:#fff;border-radius:28px;padding:10px;box-shadow:0 8px 0 var(--pink-soft), 0 12px 24px rgba(217,84,126,.15);transform:rotate(-4deg)}
+.eyebrow{display:inline-block;background:#fff;border:2px solid var(--pink);color:var(--pink-deep);border-radius:999px;padding:2px 14px;font-size:13px;font-weight:700;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.35;margin:0 0 12px;letter-spacing:.02em}
+.hero h1 span{background:linear-gradient(transparent 62%, #ffc9d9 62%);padding:0 4px}
+.hero p.lead{max-width:640px;margin:0 auto 28px;color:var(--muted)}
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:999px;padding:12px 28px;border:2px solid var(--pink-deep);transition:transform .15s;font-family:inherit;font-size:16px;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--pink-deep);color:#fff;box-shadow:0 5px 0 #b63d63}
+.btn.ghost{background:#fff;color:var(--pink-deep);box-shadow:0 5px 0 var(--pink-soft)}
+.btn.disabled{background:#f4e9ed;color:var(--muted);border-color:var(--line);box-shadow:0 5px 0 var(--pink-soft);cursor:default;pointer-events:none}
+.note{font-size:13px;color:var(--muted);margin-top:18px}
+
+/* sections */
+section{padding:64px 0}
+section.alt{background:var(--pink-pale)}
+h2{text-align:center;font-size:clamp(22px,3.4vw,30px);margin:0 0 6px}
+h2::after{content:"";display:block;width:56px;height:6px;border-radius:6px;background:repeating-linear-gradient(90deg,var(--pink) 0 10px,transparent 10px 16px);margin:10px auto 0}
+.sub{text-align:center;color:var(--muted);margin:14px 0 36px}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}
+.card{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:22px 22px 20px;box-shadow:0 5px 0 var(--pink-soft)}
+.card .no{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--pink);color:#fff;font-weight:700;margin-bottom:8px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.75}
+
+/* steps */
+.steps{max-width:760px;margin:0 auto;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;position:relative;background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:16px 20px 14px 70px;margin-bottom:14px;box-shadow:0 4px 0 var(--pink-soft)}
+.steps li::before{content:counter(s);position:absolute;left:18px;top:14px;width:36px;height:36px;border-radius:50%;background:var(--pink-deep);color:#fff;font-weight:700;display:grid;place-items:center}
+.steps b{display:block;font-size:17px}
+.steps span{color:var(--muted);font-size:14.5px}
+
+/* video */
+.videos{display:flex;gap:24px;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin-top:44px}
+.vbox{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:10px;box-shadow:0 6px 0 var(--pink-soft)}
+.vbox.wide{flex:1 1 520px;max-width:620px}
+.vbox.short{flex:0 0 auto;width:260px}
+.vbox .ratio{position:relative;border-radius:10px;overflow:hidden;background:var(--pink-soft);display:grid;place-items:center;color:var(--pink-deep);font-weight:700}
+.vbox.wide .ratio{aspect-ratio:16/9}
+.vbox.short .ratio{aspect-ratio:9/16}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vbox p{margin:10px 4px 2px;text-align:center;font-size:14px;font-weight:700}
+.vbox p small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+
+/* shots */
+.shot{margin:0 0 46px}
+.shot:last-child{margin-bottom:0}
+.shot .frame{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:10px;box-shadow:0 6px 0 var(--pink-soft)}
+.shot .ph{aspect-ratio:16/9;border-radius:10px;background:var(--pink-soft);display:grid;place-items:center;color:var(--pink-deep);font-weight:700}
+.shot figcaption{margin-top:16px;text-align:center}
+.shot figcaption b{display:inline-block;background:var(--pink-soft);color:var(--pink-deep);border-radius:999px;padding:1px 14px;margin-bottom:4px}
+.shot figcaption span{display:block;color:var(--muted);font-size:14.5px}
+
+/* syntax */
+.syn{max-width:760px;margin:0 auto;background:#fff;border:2px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 5px 0 var(--pink-soft)}
+.syn div{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:14px;padding:12px 20px;border-bottom:2px dotted var(--line);align-items:center;font-size:14.5px}
+.syn div:last-child{border-bottom:0}
+.syn code{background:var(--pink-soft);color:var(--pink-deep);border-radius:8px;padding:2px 10px;font-weight:700;font-size:14px;justify-self:start}
+.syn span{color:var(--muted)}
+@media (max-width:640px){.syn div{grid-template-columns:1fr;gap:4px}}
+
+/* download */
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:760px;margin:0 auto}
+.dl .card{text-align:center;padding:28px 22px}
+.dl .card h3{font-size:20px}
+.dl .card .btn{margin-top:16px}
+.tag{display:inline-block;font-size:12px;font-weight:700;background:var(--pink-soft);color:var(--pink-deep);border-radius:999px;padding:0 10px;margin-bottom:6px}
+.spec{max-width:760px;margin:30px auto 0;background:#fff;border:2px dashed var(--line);border-radius:var(--radius);padding:16px 24px;font-size:14.5px}
+.spec ul{margin:6px 0 0;padding-left:1.2em;color:var(--muted)}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+details{background:#fff;border:2px solid var(--line);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+summary{cursor:pointer;padding:14px 20px;font-weight:700;list-style:none;display:flex;align-items:center;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"＋";color:var(--pink-deep);font-weight:700}
+details[open] summary::before{content:"－"}
+details[open] summary{background:var(--pink-soft)}
+details p{margin:0;padding:14px 20px 16px;font-size:14.5px}
+
+/* history */
+.hist{max-width:760px;margin:0 auto}
+details ul{margin:0;padding:14px 20px 16px 38px;font-size:14.5px;color:var(--ink)}
+details li{margin-bottom:5px}
+summary small{color:var(--muted);font-weight:400;font-size:13px}
+
+/* terms */
+.terms{max-width:760px;margin:22px auto 0;text-align:left;background:#fff;border:2px solid var(--line);border-radius:var(--radius)}
+.terms summary{justify-content:center;font-size:14px;color:var(--ink)}
+.terms-body{padding:6px 24px 22px;font-size:13.5px;line-height:1.8;color:var(--ink);max-height:420px;overflow:auto}
+.terms-body h3{font-size:16px;margin:14px 0 8px}
+.terms-body h4{font-size:14px;margin:16px 0 2px;color:var(--pink-deep)}
+.terms-body p,.terms-body ol{margin:2px 0}
+.terms-body ol{padding-left:1.6em}
+.terms-body .date{margin-top:18px;text-align:right;color:var(--muted)}
+
+/* footer */
+footer{background:var(--pink-soft);text-align:center;padding:34px 0 40px;font-size:14px;color:var(--muted)}
+footer a{margin:0 8px;font-weight:700;white-space:nowrap}
+footer p{margin:8px 0 0}
+
+/* to top */
+.totop{position:fixed;right:18px;bottom:18px;z-index:20;width:48px;height:48px;border-radius:50%;border:2px solid var(--pink-deep);background:var(--pink-deep);color:#fff;font-size:20px;font-weight:700;line-height:1;cursor:pointer;text-decoration:none;display:grid;place-items:center;box-shadow:0 4px 0 #b63d63;opacity:0;pointer-events:none;transition:opacity .2s,transform .15s}
+.totop.show{opacity:1;pointer-events:auto}
+.totop:hover{transform:translateY(-2px)}
+
+@media (max-width:640px){
+  nav a{margin-left:9px;font-size:12.5px}
+  .brand{font-size:0;gap:0}
+  .brand img{width:30px;height:30px}
+  .hero{padding:52px 0 48px}
+  section{padding:48px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="images/icon.png" alt="">KPレスroomメーカー</a>
+    <nav>
+      <a href="#features">機能</a>
+      <a href="#flow">使い方</a>
+      <a href="#screens">画面</a>
+      <a href="#download">配布</a>
+      <a href="#faq">Q&amp;A</a>
+      <a href="#history">更新履歴</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div class="logo"><img src="images/icon.png" alt="KPレスroomメーカーのアイコン"></div>
+      <div class="eyebrow">ブラウザで動く・インストール不要</div>
+      <h1>自分のシナリオを、<br><span>ドラッグ＆ドロップでKPレスに。</span></h1>
+      <p class="lead">PDF・Word・HTML・テキストを置くだけで、シーンとボタンの下書きが自動でできます。<br>
+        ココフォリアのroomデータ（zip）として書き出せる、KPレス化のためのツールです。</p>
+      <div class="btns">
+        <a class="btn primary" href="#download">ダウンロード</a>
+        <a class="btn ghost" href="#features">機能を見る</a>
+      </div>
+      <p class="note">インターネット接続は不要です。データはお使いのブラウザの中だけに保存され、外部のサーバーには送られません。</p>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>できること</h2>
+      <p class="sub">KPレス＝KPがいなくても、ボタンをクリックして進められる形のこと。その下ごしらえを助けます。</p>
+      <div class="grid">
+        <div class="card"><div class="no">1</div><h3>文書から下書きを自動作成</h3>
+          <p>PDF・Word（.docx）・HTML・テキストをドロップ。見出しをシーンに、判定や分岐をボタンにして、下書きを作ります。</p></div>
+        <div class="card"><div class="no">2</div><h3>判定や質問も、ボタンに</h3>
+          <p>「＜目星＞ 成功: / 失敗:」は判定のボタンに、「＜◯◯について＞」は質問メニューに。手で組むより、ずっと早く進みます。</p></div>
+        <div class="card"><div class="no">3</div><h3>KP向け・HO限定の情報は除外</h3>
+          <p>KP向けの情報や、HO限定の情報は、シーンに入れずに除けます。公開してはいけない内容が、そのまま出るのを防ぎます。</p></div>
+        <div class="card"><div class="no">4</div><h3>遷移図で、つながりを確認</h3>
+          <p>シーンのつながりを図で見られます。ドラッグで線をつなげば、ボタンの行き先も直せます。</p></div>
+        <div class="card"><div class="no">5</div><h3>プレビューで、遊び方を試せる</h3>
+          <p>ココフォリアでの遊び方を、その場で試せます。書き出す前に、流れを確かめられます。</p></div>
+        <div class="card"><div class="no">6</div><h3>うっかりを防ぐチェック</h3>
+          <p>行き先のないボタンや、行き止まりのシーンを探してお知らせ。クリックで、そのシーンへ飛べます。</p></div>
+        <div class="card"><div class="no">7</div><h3>ボタン画像を、その場で作れる</h3>
+          <p>画像の読み込みのほか、「画像を作る」で作成も。戻る・進む・成功・失敗・数字などを、セットで一気に作れます。</p></div>
+        <div class="card"><div class="no">8</div><h3>ボタンの位置を、ドラッグで決める</h3>
+          <p>位置はドラッグで決められ、「まとめて動かす」なら全シーンのボタンが一緒に動きます。大きさは縦横比を保ち、整数で書き出します。</p></div>
+        <div class="card"><div class="no">9</div><h3>フラグで、条件分岐</h3>
+          <p>鍵を持っているときだけ出るボタンなど、フラグを使った分岐が作れます。本文に直接書くこともできます。</p></div>
+        <div class="card"><div class="no">10</div><h3>ココフォリア出力・取り込み</h3>
+          <p>roomデータ（zip）として書き出し。書き出したzipを読み込んで、続きを作ることもできます。</p></div>
+        <div class="card"><div class="no">11</div><h3>元に戻す・やり直す</h3>
+          <p>Ctrl+Z / Ctrl+Y で戻せます。置換（Ctrl+H）もあり、取り込んだ内容の手直しが楽です。</p></div>
+        <div class="card"><div class="no">12</div><h3>自動保存と、バックアップ</h3>
+          <p>作ったデータはブラウザに自動保存。日付と時間入りのファイル（.kplroom.json）への保存もできます。</p></div>
+      </div>
+
+      <div class="videos">
+        <div class="vbox wide">
+          <div class="ratio"><iframe src="https://www.youtube.com/embed/0KloSZRxEMA" title="使い方ガイド" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+          <p>使い方ガイド<small>使い方をじっくり知りたい方へ</small></p>
+        </div>
+        <div class="vbox short">
+          <div class="ratio"><iframe src="https://www.youtube.com/embed/9JlDZRfWdPQ" title="ショート動画" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+          <p>ざっくり紹介<small>ショート動画</small></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" class="alt">
+    <div class="wrap">
+      <h2>使い方の流れ</h2>
+      <p class="sub">これだけでOK。まずは、付属のサンプルシナリオで練習もできます。</p>
+      <ol class="steps">
+        <li><b>HTMLファイルを開く</b><span>「KPレスroomメーカー.html」をダブルクリック。Google Chrome か Microsoft Edge がおすすめです。</span></li>
+        <li><b>文書をドロップする</b><span>上のバーの「文書から下書き」を押し、出てきた枠にシナリオのファイル（PDF / Word / HTML / テキスト）をドラッグ＆ドロップ。</span></li>
+        <li><b>下書きを取り込む</b><span>見出しや判定、分岐を見つけて、シーンとボタンの下書きができます。内容を確認して「取り込む」を押します。</span></li>
+        <li><b>つながりを確認して直す</b><span>「遷移図」「プレビュー」「チェック」で確認。背景やボタンの画像も、このときに設定します。</span></li>
+        <li><b>ココフォリア出力</b><span>右上の「ココフォリア出力」で、zipを書き出します。</span></li>
+        <li><b>ココフォリアへ取り込む</b><span>ココフォリアのメニューから、そのzipをルームとして取り込み（インポート）します。</span></li>
+        <li><b>仕上げて、完成</b><span>roomのデザインなどをスクリーンパネルで追加。最終確認をすれば、KPレスroomの完成です。</span></li>
+      </ol>
+      <p class="note" style="text-align:center">自動でできるのは「下書き」です。条件分岐やエンディングへのつなぎ方は、必要に応じて手で直してください。</p>
+    </div>
+  </section>
+
+  <section id="syntax">
+    <div class="wrap">
+      <h2>本文に直接書く書き方</h2>
+      <p class="sub">慣れてきたら、本文にそのまま書いて、ボタンやフラグを作れます。<br>行き先のシーンがまだ無くても、自動で作れます。</p>
+      <div class="syn">
+        <div><code>[[文言 -&gt; 行き先]]</code><span>ボタンになります</span></div>
+        <div><code>{+鍵}</code><span>このシーンに入ると「鍵」フラグが立ちます</span></div>
+        <div><code>{-鍵}</code><span>「鍵」フラグを下ろします</span></div>
+        <div><code>[[開ける -&gt; 扉 @鍵]]</code><span>鍵があるときだけ出るボタン</span></div>
+        <div><code>[[戻る -&gt; 入口 @!鍵]]</code><span>鍵がないときだけ出るボタン</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens" class="alt">
+    <div class="wrap">
+      <h2>画面を見てみよう</h2>
+      <p class="sub">スクリーンショットは準備中です。</p>
+
+      <figure class="shot">
+        <div class="frame"><div class="ph">準備中</div></div>
+        <figcaption><b>編集</b><span>本文・ボタン・エンディング・フィールド設定を、ここで整えます。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <div class="frame"><div class="ph">準備中</div></div>
+        <figcaption><b>遷移図</b><span>シーンのつながりを図で見られます。ドラッグで線もつなげます。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <div class="frame"><div class="ph">準備中</div></div>
+        <figcaption><b>プレビュー</b><span>ココフォリアでの遊び方を、書き出す前に試せます。</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <h2>ダウンロード</h2>
+      <p class="sub">BOOTHで配布予定です。準備ができるまで、もう少しお待ちください。</p>
+      <div class="dl">
+        <div class="card">
+          <span class="tag">配布</span>
+          <h3>KPレスroomメーカー</h3>
+          <p>インストール不要。HTMLファイルを開くだけで使えます。サンプルシナリオ付きです。</p>
+          <a class="btn disabled" href="#download" aria-disabled="true">BOOTH（準備中）</a>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>動作環境・ご注意</b>
+        <ul>
+          <li>Google Chrome または Microsoft Edge をおすすめします。</li>
+          <li>フォルダの中身（core.js、vendor、logo.png など）は、HTMLファイルと同じ場所に置いたままにしてください。移すときは、フォルダごと移動します。</li>
+          <li>ココフォリアの仕様は変わることがあります。取り込めない・表示が違うときは、お知らせください。</li>
+          <li>自動保存はブラウザの中です。ブラウザのデータを消すと無くなるので、こまめにファイルへも保存してください。</li>
+          <li>PDF読み込みには「pdf.js」（Apache License 2.0）を使っています。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="alt">
+    <div class="wrap">
+      <h2>困ったとき</h2>
+      <p class="sub">よくある質問です。</p>
+      <div class="faq">
+        <details open>
+          <summary>画面が古いまま・動きがおかしい</summary>
+          <p>Ctrl+F5 で再読み込みしてみてください。</p>
+        </details>
+        <details>
+          <summary>取り込んだ内容がおかしい</summary>
+          <p>「元に戻す」（Ctrl+Z）で戻せます。PDFが読み込めないときは、Word・HTML・テキストにして試してください。</p>
+        </details>
+        <details>
+          <summary>チェックに赤いマークが出ている</summary>
+          <p>行き先のないボタンなどが見つかっています。クリックすると、そのシーンへ移動します。</p>
+        </details>
+        <details>
+          <summary>エンディングが「行き止まり」と出てしまう</summary>
+          <p>エンディングのシーンは、「エンディング」にチェックを入れると、行き止まりでも問題として出なくなります。</p>
+        </details>
+        <details>
+          <summary>データはどこに保存されますか？</summary>
+          <p>お使いのブラウザの中に自動で保存されます。外部のサーバーには送られません。バックアップは「データ保存」から、ファイル（.kplroom.json）で残せます。</p>
+        </details>
+        <details>
+          <summary>使ったとき、クレジットは必要ですか？</summary>
+          <p>ご自由にお使いください。クレジットの記載は自由で、書かなくてもかまいません。使ってくださった報告やクレジットの記載は、大歓迎です。励みになります。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="history">
+    <div class="wrap">
+      <h2>更新履歴</h2>
+      <p class="sub">新しい版が上です。</p>
+      <div class="hist">
+        <details open>
+          <summary>ver1.0.0 <small>最初の版</small></summary>
+          <ul>
+            <li>文書（PDF・Word・HTML・テキスト）からの下書き作成、シーン一覧、編集、遷移図、プレビュー、チェック</li>
+            <li>ボタン画像の作成・読み込み、ボタン位置の設定、フラグによる条件分岐</li>
+            <li>ココフォリア出力・roomの取り込み、データの保存・読み込み、元に戻す・やり直す、置換</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a href="https://utiyoso-uy.booth.pm/" target="_blank" rel="noopener">BOOTH</a>
+      <a href="https://x.com/utiyoso_uy" target="_blank" rel="noopener">X @utiyoso_uy</a>
+      <a href="https://youtu.be/0KloSZRxEMA" target="_blank" rel="noopener">使い方ガイド</a>
+      <a href="https://utiyoso.github.io/" target="_blank" rel="noopener">他ツール一覧</a>
+      <a href="#terms" onclick="document.getElementById('terms').open=true">利用規約</a>
+      <a href="https://mond.how/utiyoso_uy?lang=ja" target="_blank" rel="noopener">バグ報告・お問い合わせ</a>
+    </div>
+    <details class="terms" id="terms">
+      <summary>利用規約</summary>
+      <div class="terms-body">
+        <h3>KPレスroomメーカー（うちよそ研究所）利用規約</h3>
+        <p>この規約は、うちよそ研究所（以下「作者」）が提供するソフトウェア「KPレスroomメーカー」（以下「本ソフト」）の利用条件です。本ソフトを使った時点で、この規約に同意したものとみなします。同意できない場合は、本ソフトを使わないでください。</p>
+        <h4>第1条（現状のまま提供します）</h4>
+        <p>本ソフトは、現状のまま提供します。動作の正しさ、特定の目的への適合、不具合がないこと、将来も使い続けられることなどを、作者は保証しません。</p>
+        <h4>第2条（自己責任での利用）</h4>
+        <p>本ソフトの利用は、すべて利用者ご自身の責任で行ってください。本ソフトを使ったこと、または使えなかったことで生じたトラブル・損害について、作者は責任を負いません。</p>
+        <h4>第3条（データについて）</h4>
+        <p>本ソフトで作ったデータは、お使いのブラウザの中に保存されます。本ソフトの不具合、ブラウザのデータの削除、パソコンの故障、操作ミスなどで、データが消えたり壊れたりすることがあります。大切なデータは、利用者ご自身で、ファイル（.kplroom.json）に保存するなどして、定期的にバックアップを取ってください。データの消失・破損による損害について、作者は責任を負いません。</p>
+        <h4>第4条（取り込む文章・画像について）</h4>
+        <p>本ソフトに取り込む、PDF・Word・HTML・テキスト・画像などの権利は、それぞれの権利者にあります。他人の作品を取り込むときは、その作品の利用規約・ガイドラインを守ってください。取り込み、書き出し、共有、配布などで、権利者や第三者との間にトラブルが生じても、作者は責任を負いません。</p>
+        <h4>第5条（取り込み・書き出しの結果について）</h4>
+        <p>文章の取り込み（見出し・判定・分岐の自動判定など）や、ココフォリア用データの書き出しの結果は、正確さを保証しません。KP向けの情報やHO限定の情報の除外も、完全ではありません。公開前に、利用者ご自身で内容を確認してください。</p>
+        <h4>第6条（外部サービスについて）</h4>
+        <p>ココフォリアなどの外部のサービスは、作者とは関係のない第三者のサービスです。外部サービスの仕様の変更、停止、そちらで起きたトラブル（書き出したデータが取り込めなくなることなどを含みます）について、作者は責任を負いません。</p>
+        <h4>第7条（禁止事項）</h4>
+        <p>次のことはしないでください。</p>
+        <ol>
+          <li>本ソフトを、無断で、販売・転売・再配布すること</li>
+          <li>本ソフトを、改変して配布すること、または、作者が作ったものと偽ること</li>
+          <li>法律や、公序良俗に反する目的で利用すること</li>
+          <li>他人の権利を侵害する目的で利用すること</li>
+        </ol>
+        <h4>第8条（作ったroomについて）</h4>
+        <p>本ソフトで作ったroomのデータの権利は、元のシナリオの権利者に属します。クレジットの記載は自由で、書かなくてもかまいません。</p>
+        <h4>第9条（提供の変更・終了）</h4>
+        <p>作者は、予告なく、本ソフトの内容を変更したり、提供や、サポートを終了したりすることがあります。これによって利用者に生じた損害について、作者は責任を負いません。</p>
+        <h4>第10条（規約の変更）</h4>
+        <p>作者は、必要に応じて、この規約を変更することがあります。変更後の規約は、本ソフトの配布ページなどに掲載した時点から、効力を持ちます。</p>
+        <h4>第11条（準拠法）</h4>
+        <p>この規約は、日本の法律に従います。</p>
+        <p class="date">制定：2026年11月12日</p>
+      </div>
+    </details>
+    <p>BOOTHは準備中です</p>
+    <p>© うちよそ研究所</p>
+  </div>
+</footer>
+
+<a href="#top" class="totop" id="totop" aria-label="ページの先頭へ">↑</a>
+<script>
+(function(){
+  var b=document.getElementById('totop');
+  function f(){b.classList.toggle('show',window.scrollY>300)}
+  window.addEventListener('scroll',f,{passive:true});f();
+})();
+</script>
+
+</body>
+</html>
